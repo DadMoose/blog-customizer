@@ -3,25 +3,31 @@ import clsx from 'clsx';
 // Сообщаем вебпаку, что этот файл использует это изображение.
 import plane from 'src/images/plane.png';
 import { Text } from 'src/ui/text';
+import { Spacing } from 'src/ui/spacing';
 
 import styles from './Article.module.scss';
 
 export const Article = () => {
 	return (
 		<article className={clsx(styles.article)}>
+			<Spacing size={90} />
 			<Text as='h1' size={45} weight={800} uppercase dynamicLite>
 				Портрет Западной Швейцарии
 			</Text>
+			<Spacing size={24} />
 			<div className={styles.titleDescription}>
 				<Text size={22} weight={800} uppercase align='center' dynamicLite>
 					Примитивист Фиштр расписывает новый бюджетный авиалайнер
 				</Text>
 			</div>
+			<Spacing size={50} />
 			<img className={styles.image} src={plane} alt='Картинка самолета' />
+			<Spacing size={24} />
 			<Text dynamic size={18} fontStyle='italic'>
 				Фото: Hans-Peter Gauster , &quot;Bombardier CSeries CS300 HB-JCA&quot; ©
 				2017 CC BY-SA 2.0
 			</Text>
+			<Spacing size={24} />
 			<Text dynamic size={18}>
 				В конце 2016 года швейцарская авиакомпания Swiss получила свой первый
 				канадский «Бомбардье CS300» для полётов малой и средней дальности. Чтобы
@@ -45,6 +51,7 @@ export const Article = () => {
 				на на Майорке, Крите и Сицилии. Самолёт останется в той же ливрее, пока
 				его купит другая авиакомпания.
 			</Text>
+			<Spacing size={90} />
 		</article>
 	);
 };

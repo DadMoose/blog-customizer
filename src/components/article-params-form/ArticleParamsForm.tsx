@@ -2,9 +2,21 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 
 import styles from './ArticleParamsForm.module.scss';
-import { ArticleStateType } from 'src/constants/articleProps';
+import {
+	ArticleStateType,
+	backgroundColors,
+	contentWidthArr,
+	fontColors,
+	fontFamilyOptions,
+	fontSizeOptions,
+} from 'src/constants/articleProps';
 import { FormEvent, useEffect, useRef } from 'react';
 import clsx from 'clsx';
+import { Select } from 'src/ui/select';
+import { RadioGroup } from 'src/ui/radio-group';
+import { Separator } from 'src/ui/separator';
+import { Spacing } from 'src/ui/spacing';
+import { Text } from 'src/ui/text';
 
 type ArticleParamsFormProps = {
 	isOpen: boolean;
@@ -67,6 +79,48 @@ export const ArticleParamsForm = ({
 					className={styles.form}
 					onSubmit={handleSubmit}
 					onReset={handleReset}>
+					<Text as='h3' size={31} weight={800} uppercase dynamicLite>
+						Задайте параметры
+					</Text>
+					<Spacing size={50} />
+					<Select
+						title={'Шрифт'}
+						options={fontFamilyOptions}
+						selected={formState.fontFamilyOption}
+						onChange={(option) => onChange({ fontFamilyOption: option })}
+					/>
+					<Spacing size={50} />
+					<RadioGroup
+						title={'Размер Шрифта'}
+						name={'font-size'}
+						options={fontSizeOptions}
+						selected={formState.fontSizeOption}
+						onChange={(option) => onChange({ fontSizeOption: option })}
+					/>
+					<Spacing size={50} />
+					<Select
+						title={'Цвет шрифта'}
+						options={fontColors}
+						selected={formState.fontColor}
+						onChange={(option) => onChange({ fontColor: option })}
+					/>
+					<Spacing size={50} />
+					<Separator />
+					<Spacing size={50} />
+					<Select
+						title={'Цвет фона'}
+						options={backgroundColors}
+						selected={formState.backgroundColor}
+						onChange={(option) => onChange({ backgroundColor: option })}
+					/>
+					<Spacing size={50} />
+					<Select
+						title={'Ширина контента'}
+						options={contentWidthArr}
+						selected={formState.contentWidth}
+						onChange={(option) => onChange({ contentWidth: option })}
+					/>
+					<Spacing size={207} />
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />
 						<Button title='Применить' htmlType='submit' type='apply' />
