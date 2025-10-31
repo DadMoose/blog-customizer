@@ -79,7 +79,7 @@ export const ArticleParamsForm = ({
 					className={styles.form}
 					onSubmit={handleSubmit}
 					onReset={handleReset}>
-					<Text as='h3' size={31} weight={800} uppercase dynamicLite>
+					<Text as='h3' size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
 					<Spacing size={50} />
