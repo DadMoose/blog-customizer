@@ -6,74 +6,74 @@ import {
 	ArticleStateType,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
+	OptionType,
 } from 'src/constants/articleProps';
-import { FormEvent, useEffect, useRef } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { Select } from 'src/ui/select';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Separator } from 'src/ui/separator';
 import { Spacing } from 'src/ui/spacing';
 import { Text } from 'src/ui/text';
+import { useCloseOnOutsideClickOrEsc } from 'components/article-params-form/hooks/useCloseOnOutsideClickOrEsc';
 
 type ArticleParamsFormProps = {
-	isOpen: boolean;
-	formState: ArticleStateType;
-	onChange: (state: Partial<ArticleStateType>) => void;
-	onApply: () => void;
-	onReset: () => void;
-	onClose: () => void;
-	onToggle: () => void;
+	currentArticleState: ArticleStateType;
+	changeArticleState: (state: ArticleStateType) => void;
 };
 
 export const ArticleParamsForm = ({
-	isOpen,
-	formState,
-	onChange,
-	onApply,
-	onReset,
-	onClose,
-	onToggle,
+	currentArticleState,
+	changeArticleState,
 }: ArticleParamsFormProps) => {
 	const containerRef = useRef<HTMLElement>(null);
+	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [currentFormState, setCurrentFormState] =
+		useState<ArticleStateType>(currentArticleState);
 
-	useEffect(() => {
-		if (!isOpen) return;
+	const closeForm = () => {
+		setIsFormOpen(false);
+	};
 
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				event.target instanceof HTMLElement &&
-				containerRef.current &&
-				!containerRef.current.contains(event.target)
-			) {
-				onClose();
-			}
-		};
+	useCloseOnOutsideClickOrEsc({
+		isOpenElement: isFormOpen,
+		elementRef: containerRef,
+		onClose: () => closeForm(),
+	});
 
-		window.addEventListener('mousedown', handleClickOutside);
-
-		return () => {
-			window.removeEventListener('mousedown', handleClickOutside);
-		};
-	}, [isOpen, onClose]);
+	const toggleForm = () => {
+		setIsFormOpen((prevState) => !prevState);
+	};
 
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		onApply();
+		changeArticleState(currentFormState);
+		closeForm();
 	};
 
 	const handleReset = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		onReset();
+		setCurrentFormState(defaultArticleState);
+		changeArticleState(defaultArticleState);
+	};
+
+	const updateFormField = (field: keyof typeof currentFormState) => {
+		return (value: OptionType) => {
+			setCurrentFormState({ ...currentFormState, [field]: value });
+		};
 	};
 
 	return (
 		<>
-			<ArrowButton isOpen={isOpen} onClick={onToggle} />
+			<ArrowButton isOpen={isFormOpen} onClick={toggleForm} />
 			<aside
-				className={clsx(styles.container, { [styles.container_open]: isOpen })}
+				className={clsx(styles.container, {
+					[styles.container_open]: isFormOpen,
+				})}
 				ref={containerRef}>
 				<form
 					className={styles.form}
@@ -86,23 +86,23 @@ export const ArticleParamsForm = ({
 					<Select
 						title={'Шрифт'}
 						options={fontFamilyOptions}
-						selected={formState.fontFamilyOption}
-						onChange={(option) => onChange({ fontFamilyOption: option })}
+						selected={currentFormState.fontFamilyOption}
+						onChange={updateFormField('fontFamilyOption')}
 					/>
 					<Spacing size={50} />
 					<RadioGroup
 						title={'Размер Шрифта'}
 						name={'font-size'}
 						options={fontSizeOptions}
-						selected={formState.fontSizeOption}
-						onChange={(option) => onChange({ fontSizeOption: option })}
+						selected={currentFormState.fontSizeOption}
+						onChange={updateFormField('fontSizeOption')}
 					/>
 					<Spacing size={50} />
 					<Select
 						title={'Цвет шрифта'}
 						options={fontColors}
-						selected={formState.fontColor}
-						onChange={(option) => onChange({ fontColor: option })}
+						selected={currentFormState.fontColor}
+						onChange={updateFormField('fontColor')}
 					/>
 					<Spacing size={50} />
 					<Separator />
@@ -110,15 +110,15 @@ export const ArticleParamsForm = ({
 					<Select
 						title={'Цвет фона'}
 						options={backgroundColors}
-						selected={formState.backgroundColor}
-						onChange={(option) => onChange({ backgroundColor: option })}
+						selected={currentFormState.backgroundColor}
+						onChange={updateFormField('backgroundColor')}
 					/>
 					<Spacing size={50} />
 					<Select
 						title={'Ширина контента'}
 						options={contentWidthArr}
-						selected={formState.contentWidth}
-						onChange={(option) => onChange({ contentWidth: option })}
+						selected={currentFormState.contentWidth}
+						onChange={updateFormField('contentWidth')}
 					/>
 					<Spacing size={207} />
 					<div className={styles.bottomContainer}>
